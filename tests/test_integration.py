@@ -2,7 +2,6 @@
 
 Validates real DB + CA + API working together (excluding ACL side effects).
 """
-import os
 from importlib import reload
 from uuid import UUID
 
@@ -13,26 +12,49 @@ from src.secure_iot_onboarding.app import create_app
 
 def test_register_and_revoke_flow(tmp_path, monkeypatch):
     # Redirect DB to temp file
-    monkeypatch.setenv("DEVICE_DB_URL", f"sqlite:///{tmp_path}/int.db")
+    monkeypatch.setenv(
+        "DEVICE_DB_URL",
+        f"sqlite:///{tmp_path}/int.db"
+    )
     reload(db_module)
     db_module.init_db()
 
     # Redirect CA directories
     monkeypatch.setattr(ca, "BASE_DIR", tmp_path / "certs")
-    monkeypatch.setattr(ca, "DEVICES_DIR", tmp_path / "certs" / "devices")
-    monkeypatch.setattr(ca, "CA_KEY_PATH", tmp_path / "certs" / "ca.key")
-    monkeypatch.setattr(ca, "CA_CERT_PATH", tmp_path / "certs" / "ca.crt")
-    monkeypatch.setattr(ca, "REVOCATION_FILE", tmp_path / "certs" / "revoked.txt")
-    monkeypatch.setattr(ca, "CRL_FILE", tmp_path / "certs" / "crl.pem")
+    monkeypatch.setattr(
+        ca, "DEVICES_DIR", tmp_path / "certs" / "devices"
+    )
+    monkeypatch.setattr(
+        ca, "CA_KEY_PATH", tmp_path / "certs" / "ca.key"
+    )
+    monkeypatch.setattr(
+        ca, "CA_CERT_PATH", tmp_path / "certs" / "ca.crt"
+    )
+    monkeypatch.setattr(
+        ca, "REVOCATION_FILE", tmp_path / "certs" / "revoked.txt"
+    )
+    monkeypatch.setattr(
+        ca, "CRL_FILE", tmp_path / "certs" / "crl.pem"
+    )
 
     # Redirect credential delivery paths
     from src.secure_iot_onboarding import credential_delivery
-    monkeypatch.setattr(credential_delivery, "BASE_CERTS", tmp_path / "certs")
-    monkeypatch.setattr(credential_delivery, "DOWNLOAD_META", tmp_path / "data" / "download_links.json")
+    monkeypatch.setattr(
+        credential_delivery, "BASE_CERTS", tmp_path / "certs"
+    )
+    monkeypatch.setattr(
+        credential_delivery,
+        "DOWNLOAD_META",
+        tmp_path / "data" / "download_links.json"
+    )
 
     # Redirect broker ACL file
     from src.secure_iot_onboarding import broker_provisioning
-    monkeypatch.setattr(broker_provisioning, "ACL_FILE", tmp_path / "data" / "mosquitto.acl")
+    monkeypatch.setattr(
+        broker_provisioning,
+        "ACL_FILE",
+        tmp_path / "data" / "mosquitto.acl"
+    )
 
     app = create_app()
     client = app.test_client()
@@ -40,7 +62,12 @@ def test_register_and_revoke_flow(tmp_path, monkeypatch):
     # Register
     r = client.post(
         "/register",
-        json={"name": "int-dev", "type": "sensor", "location": "field", "firmware": "1.2.3"},
+        json={
+            "name": "int-dev",
+            "type": "sensor",
+            "location": "field",
+            "firmware": "1.2.3",
+        },
     )
     assert r.status_code == 201
     data = r.get_json()
