@@ -31,9 +31,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Lint
-        run: |
-          flake8 src tests
+  # Lint step removed per request to avoid GitHub enforcing flake8.
+  # To re-enable later, restore a step like:
+  # - name: Lint
+  #   run: flake8 src tests || echo "(flake8 failures ignored)"
 
       - name: Run tests
         run: |
