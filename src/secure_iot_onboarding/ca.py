@@ -193,7 +193,8 @@ def revoke_certificate(fingerprint: str):
 
 
 def create_crl():
-    """Generate a simple PEM file enumerating revoked fingerprints (placeholder CRL)."""
+    """Generate a simple PEM file enumerating revoked fingerprints
+    (placeholder CRL)."""
     ensure_dirs()
     revoked = []
     if REVOCATION_FILE.exists():
