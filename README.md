@@ -10,49 +10,16 @@
 Bootstrapping IoT devices securely at scale is hard: keys must be unique, certificates must be signed and revocable, broker access must be controlled, and credentials must be delivered safely. **Secure IoT Device Onboarding Portal** automates secure onboarding using X.509 certificates, a lightweight internal Certificate Authority (CA), a device registry, broker ACL provisioning for **MQTT (mTLS)**, and controlled credential packaging / delivery.
 
 ## 🧱 Architecture Overview
-```text
-													+---------------------------+
-													|        Operator / CLI     |
-													+-------------+-------------+
-																				|
-																				| REST (register / revoke / query)
-																				v
-													+---------------------------+
-													|        Flask API          |
-													|  (app.py)                 |
-													+----+----------+-----------+
-															 |          |
-			(cert issue / revoke)    |          | (ACL manage)
-															 v          v
-											+---------------+  +------------------+
-											|   CA Module   |  |  Broker Provision|
-											|   (ca.py)     |  | (broker_*.py)    |
-											+-------+-------+  +---------+--------+
-															|                     |
-										(certs/, CRL)          (mosquitto ACL file)
-															|                     |
-															v                     |
-											+---------------+             |
-											| Credential    |             |
-											| Delivery      |<------------+
-											| (packaging)   |
-											+-------+-------+
-															|
-															| (password protected ZIP + signed link)
-															v
-												Device Manufacturer
 
-											+--------------------+
-											|   Device Runtime   |
-											|  (MQTT mTLS conn)  |
-											+---------+----------+
-																|
-																| TLS (Client Cert + CA Root)
-																v
-												 +-------------+
-												 |  MQTT Broker|
-												 +-------------+
-```
+The Secure IoT Device Onboarding Portal follows a modular architecture with clear separation of concerns across multiple layers:
+
+**🏗️ For detailed system architecture, data flows, security boundaries, and deployment guides, see: [📋 Architecture Documentation](docs/ARCHITECTURE.md)**
+
+### Quick Overview
+- **REST API Layer**: Flask-based endpoints for device lifecycle management
+- **Core Services**: CA module, database layer, credential delivery, broker provisioning
+- **Security**: X.509 PKI, mTLS authentication, ACL-based access control
+- **Storage**: Certificate file system, SQLite/PostgreSQL database, MQTT ACL files
 
 ## ✨ Features
 * 🔐 **Automated X.509 certificate issuance** (device certificates, RSA 2048, SHA256)
@@ -165,27 +132,30 @@ For a detailed conceptual deep dive (PKI concepts, threat model, scaling & harde
 3. Run lint & tests (`flake8 && pytest`)
 4. Submit PR with detailed description / rationale
 
-## � **Comprehensive Documentation**
+## 📚 **Comprehensive Documentation**
 
 This project includes extensive educational documentation covering all aspects of secure IoT infrastructure:
 
-### 📖 **Documentation Suite**
+### 📖 **Core Documentation**
 - **[📋 Documentation Index](docs/documentation-index.md)** - Complete guide to all available documentation
-- **[🎓 Main Learning Guide](docs/learning.md)** - Comprehensive system overview and concepts
+- **[�️ System Architecture](docs/ARCHITECTURE.md)** - Detailed architecture diagrams, data flows, and deployment guides
+- **[�🎓 Main Learning Guide](docs/learning.md)** - Comprehensive system overview and concepts
+
+### 🔧 **Technical Deep Dives**
 - **[🔐 PKI Fundamentals](docs/pki-fundamentals.md)** - Deep dive into Public Key Infrastructure for IoT
 - **[📡 MQTT Security](docs/mqtt-security.md)** - Complete guide to MQTT broker security and access control
 - **[🛡️ Threat Modeling](docs/threat-modeling.md)** - Security threats, attack scenarios, and mitigation strategies
 - **[🚀 Production Deployment](docs/production-deployment.md)** - Production deployment guide with security hardening
 
 ### 🎯 **Learning Paths by Role**
-- **Security Engineers**: Start with threat modeling and PKI fundamentals
-- **DevOps Engineers**: Focus on production deployment and MQTT security
-- **IoT Developers**: Begin with the main learning guide and PKI concepts
-- **System Architects**: Review threat modeling and production deployment
+- **Security Engineers**: Start with [threat modeling](docs/threat-modeling.md) and [PKI fundamentals](docs/pki-fundamentals.md)
+- **DevOps Engineers**: Focus on [architecture](docs/ARCHITECTURE.md) and [production deployment](docs/production-deployment.md)
+- **IoT Developers**: Begin with [learning guide](docs/learning.md) and [MQTT security](docs/mqtt-security.md)
+- **System Architects**: Review [architecture](docs/ARCHITECTURE.md) and [threat modeling](docs/threat-modeling.md)
 
 **Total: 90+ pages** of comprehensive educational content covering everything from basic concepts to production deployment.
 
-## �📄 License
+## 📄 License
 MIT License. See the LICENSE file (to be added) for details.
 
 ## 🗺 Roadmap (Ideas)

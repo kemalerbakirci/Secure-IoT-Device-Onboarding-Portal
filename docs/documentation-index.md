@@ -8,6 +8,7 @@ Welcome to the complete documentation suite for the Secure IoT Device Onboarding
 
 ### 🎯 **Getting Started**
 - **[Main Learning Guide](learning.md)** - Complete overview of the system and core concepts
+- **[System Architecture](ARCHITECTURE.md)** - Detailed architecture diagrams, data flows, and deployment guides
 - **[Project README](../README.md)** - Project overview, installation, and quick start guide
 
 ### 🔐 **Security Fundamentals**
@@ -27,20 +28,20 @@ Welcome to the complete documentation suite for the Secure IoT Device Onboarding
 4. Review **[Production Deployment](production-deployment.md)** for operational security
 
 ### For DevOps Engineers
-1. Begin with **[Main Learning Guide](learning.md)** for system overview
-2. Focus on **[Production Deployment](production-deployment.md)** for infrastructure
+1. Begin with **[System Architecture](ARCHITECTURE.md)** for infrastructure understanding
+2. Focus on **[Production Deployment](production-deployment.md)** for deployment details
 3. Reference **[MQTT Security](mqtt-security.md)** for broker configuration
 4. Use **[PKI Fundamentals](pki-fundamentals.md)** for certificate management
 
 ### For IoT Developers
 1. Start with **[Main Learning Guide](learning.md)** for complete system understanding
-2. Study **[PKI Fundamentals](pki-fundamentals.md)** for device authentication
-3. Learn **[MQTT Security](mqtt-security.md)** for secure communication
-4. Apply **[Threat Modeling](threat-modeling.md)** concepts to device design
+2. Review **[System Architecture](ARCHITECTURE.md)** for component interactions
+3. Study **[PKI Fundamentals](pki-fundamentals.md)** for device authentication
+4. Learn **[MQTT Security](mqtt-security.md)** for secure communication
 
 ### For System Architects
-1. Review **[Threat Modeling](threat-modeling.md)** for security architecture
-2. Study **[Main Learning Guide](learning.md)** for system components
+1. Start with **[System Architecture](ARCHITECTURE.md)** for complete system design
+2. Review **[Threat Modeling](threat-modeling.md)** for security architecture
 3. Plan with **[Production Deployment](production-deployment.md)** for scalability
 4. Design with **[PKI Fundamentals](pki-fundamentals.md)** and **[MQTT Security](mqtt-security.md)**
 
