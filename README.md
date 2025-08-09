@@ -1,8 +1,7 @@
 # Secure IoT Device Onboarding Portal
 
 ![MQTT](https://img.shields.io/badge/MQTT-660066?style=for-the-badge&logo=mqtt&logoColor=white)
-![Security](https://img.shields.io/badge/Security-X.## 📄 License
-MIT License. See the [LICENSE](LICENSE) file for details.9_PKI-red?style=for-the-badge)
+![Security](https://img.shields.io/badge/Security-X.509_PKI-red?style=for-the-badge)
 ![Python](https://img.shields.io/badge/Python-3.9+-blue?style=for-the-badge&logo=python&logoColor=white)
 ![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
 ![TLS](https://img.shields.io/badge/TLS-mTLS_Auth-green?style=for-the-badge)
