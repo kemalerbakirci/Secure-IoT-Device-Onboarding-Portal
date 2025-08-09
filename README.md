@@ -48,7 +48,7 @@ Prerequisites:
 
 Steps:
 ```bash
-git clone https://github.com/your-org/secure-iot-device-onboarding-portal.git
+git clone https://github.com/kemalerbakirci/Secure-IoT-Device-Onboarding-Portal
 cd secure-iot-device-onboarding-portal
 
 python -m venv .venv
