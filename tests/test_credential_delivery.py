@@ -13,12 +13,22 @@ def test_package_and_generate_link(tmp_path, monkeypatch):
     monkeypatch.setattr(ca, "DEVICES_DIR", tmp_path / "certs" / "devices")
     monkeypatch.setattr(ca, "CA_KEY_PATH", tmp_path / "certs" / "ca.key")
     monkeypatch.setattr(ca, "CA_CERT_PATH", tmp_path / "certs" / "ca.crt")
-    monkeypatch.setattr(ca, "REVOCATION_FILE", tmp_path / "certs" / "revoked.txt")
+    monkeypatch.setattr(
+        ca,
+        "REVOCATION_FILE",
+        tmp_path /
+        "certs" /
+        "revoked.txt")
     monkeypatch.setattr(ca, "CRL_FILE", tmp_path / "certs" / "crl.pem")
 
     # Also patch credential delivery BASE_CERTS constant
     monkeypatch.setattr(cd, "BASE_CERTS", tmp_path / "certs")
-    monkeypatch.setattr(cd, "DOWNLOAD_META", tmp_path / "data" / "download_links.json")
+    monkeypatch.setattr(
+        cd,
+        "DOWNLOAD_META",
+        tmp_path /
+        "data" /
+        "download_links.json")
 
     ca.ensure_ca_root()
     key_path, csr_path = ca.generate_keypair("dev-cred")
@@ -32,7 +42,12 @@ def test_package_and_generate_link(tmp_path, monkeypatch):
     with pyzipper.AESZipFile(zip_path, 'r') as zf:
         zf.setpassword(password.encode())
         names = zf.namelist()
-        assert {"device.key", "device.crt", "ca.crt", "README.txt"}.issubset(set(names))
+        assert {
+            "device.key",
+            "device.crt",
+            "ca.crt",
+            "README.txt"}.issubset(
+            set(names))
 
     link = cd.generate_download_link(zip_path, expiry_minutes=5)
     assert link.startswith("https://local-download/")
