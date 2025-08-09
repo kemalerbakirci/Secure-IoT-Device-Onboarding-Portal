@@ -67,7 +67,7 @@ X.509 is the standard format for public key certificates used in PKI systems. Th
 Certificate:
     Data:
         Version: 3 (0x2)
-        Serial Number: 4a:2f:93:17:e8:3d:44:5f:b2:85:02:1a:7c:4e:28:d9
+        Serial Number: 4a:2f:93:17:e8:3d:44:.............
         Signature Algorithm: sha256WithRSAEncryption
         Issuer: CN=Secure IoT CA, O=Company, C=US
         Validity:
