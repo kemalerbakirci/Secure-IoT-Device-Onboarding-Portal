@@ -17,22 +17,26 @@ def client():
 @patch("src.secure_iot_onboarding.app.db_module.add_certificate")
 @patch("src.secure_iot_onboarding.app.broker_provisioning.add_device_acl")
 @patch("src.secure_iot_onboarding.app.credential_delivery.package_credentials")
-@patch("src.secure_iot_onboarding.app.credential_delivery.generate_download_link")
+@patch(
+    "src.secure_iot_onboarding.app.credential_delivery.generate_download_link"
+)
 def test_register_device(
-        mock_link,
-        mock_package,
-        mock_acl,
-        mock_add_cert,
-        mock_sign,
-        mock_gen_key,
-        mock_add_dev,
-        client):
+    mock_link,
+    mock_package,
+    mock_acl,
+    mock_add_cert,
+    mock_sign,
+    mock_gen_key,
+    mock_add_dev,
+    client,
+):
     mock_add_dev.return_value = type("Device", (), {"id": "1234"})
     mock_gen_key.return_value = ("/tmp/key", "/tmp/csr")
     mock_sign.return_value = (
         "/tmp/cert",
         "ABC123",
-        __import__("datetime").datetime.utcnow())
+        __import__("datetime").datetime.utcnow(),
+    )
     mock_add_cert.return_value = None
     mock_package.return_value = "/tmp/cred.zip"
     mock_link.return_value = "https://local/cred"
@@ -55,11 +59,8 @@ def test_get_device_not_found(client):
 @patch("src.secure_iot_onboarding.app.db_module.revoke_device")
 @patch("src.secure_iot_onboarding.app.broker_provisioning.remove_device_acl")
 def test_revoke(
-        mock_remove,
-        mock_revoke_dev,
-        mock_revoke_cert,
-        mock_get_dev,
-        client):
+    mock_remove, mock_revoke_dev, mock_revoke_cert, mock_get_dev, client
+):
     cert = type("Cert", (), {"fingerprint": "FFF", "revoked": False})
     device = type(
         "Device",

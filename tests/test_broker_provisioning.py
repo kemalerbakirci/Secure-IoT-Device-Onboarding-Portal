@@ -1,4 +1,3 @@
-from pathlib import Path
 
 from src.secure_iot_onboarding import broker_provisioning as bp
 

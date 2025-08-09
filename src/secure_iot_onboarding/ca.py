@@ -20,12 +20,12 @@ Simplifications:
   * CRL maintained locally (no distribution endpoint yet)
   * Revocation tracked via a plaintext registry file (revoked.txt)
 """
+
 from __future__ import annotations
 
 from pathlib import Path
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from typing import Tuple
-import os
 import threading
 
 from cryptography import x509
@@ -58,33 +58,35 @@ def ensure_ca_root(valid_years: int = 10):
         if CA_KEY_PATH.exists() and CA_CERT_PATH.exists():  # double-checked
             return
         key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
-        subject = issuer = x509.Name([
-            x509.NameAttribute(NameOID.COMMON_NAME, "Secure IoT CA"),
-        ])
+        subject = issuer = x509.Name(
+            [
+                x509.NameAttribute(NameOID.COMMON_NAME, "Secure IoT CA"),
+            ]
+        )
         now = datetime.utcnow()
         cert = (
-            x509.CertificateBuilder() .subject_name(subject) .issuer_name(issuer) .public_key(
-                key.public_key()) .serial_number(
-                x509.random_serial_number()) .not_valid_before(
-                now -
-                timedelta(
-                    minutes=1)) .not_valid_after(
-                        now +
-                        timedelta(
-                            days=365 *
-                            valid_years)) .add_extension(
-                                x509.BasicConstraints(
-                                    ca=True,
-                                    path_length=None),
-                critical=True) .add_extension(
-                x509.SubjectKeyIdentifier.from_public_key(
-                    key.public_key()),
-                critical=False) .add_extension(
+            x509.CertificateBuilder()
+            .subject_name(subject)
+            .issuer_name(issuer)
+            .public_key(key.public_key())
+            .serial_number(x509.random_serial_number())
+            .not_valid_before(now - timedelta(minutes=1))
+            .not_valid_after(now + timedelta(days=365 * valid_years))
+            .add_extension(
+                x509.BasicConstraints(ca=True, path_length=None), critical=True
+            )
+            .add_extension(
+                x509.SubjectKeyIdentifier.from_public_key(key.public_key()),
+                critical=False,
+            )
+            .add_extension(
                 x509.AuthorityKeyIdentifier.from_issuer_public_key(
-                    key.public_key()),
-                critical=False) .sign(
-                private_key=key,
-                algorithm=hashes.SHA256()))
+                    key.public_key()
+                ),
+                critical=False,
+            )
+            .sign(private_key=key, algorithm=hashes.SHA256())
+        )
         CA_KEY_PATH.write_bytes(
             key.private_bytes(
                 serialization.Encoding.PEM,
@@ -98,7 +100,8 @@ def ensure_ca_root(valid_years: int = 10):
 def _load_ca():
     ensure_ca_root()
     key = serialization.load_pem_private_key(
-        CA_KEY_PATH.read_bytes(), password=None)
+        CA_KEY_PATH.read_bytes(), password=None
+    )
     cert = x509.load_pem_x509_certificate(CA_CERT_PATH.read_bytes())
     return key, cert
 
@@ -147,25 +150,23 @@ def sign_certificate(csr_path: str, device_id) -> Tuple[str, str, datetime]:
         now = datetime.utcnow()
         not_after = now + timedelta(days=365)
         cert = (
-            x509.CertificateBuilder() .subject_name(
-                csr.subject) .issuer_name(
-                ca_cert.subject) .public_key(
-                csr.public_key()) .serial_number(
-                    x509.random_serial_number()) .not_valid_before(
-                        now -
-                        timedelta(
-                            minutes=1)) .not_valid_after(not_after) .add_extension(
-                                x509.BasicConstraints(
-                                    ca=False,
-                                    path_length=None),
-                critical=True) .add_extension(
-                x509.SubjectAlternativeName(
-                    [
-                        x509.DNSName(
-                            str(device_id))]),
-                critical=False) .sign(
-                ca_key,
-                hashes.SHA256()))
+            x509.CertificateBuilder()
+            .subject_name(csr.subject)
+            .issuer_name(ca_cert.subject)
+            .public_key(csr.public_key())
+            .serial_number(x509.random_serial_number())
+            .not_valid_before(now - timedelta(minutes=1))
+            .not_valid_after(not_after)
+            .add_extension(
+                x509.BasicConstraints(ca=False, path_length=None),
+                critical=True,
+            )
+            .add_extension(
+                x509.SubjectAlternativeName([x509.DNSName(str(device_id))]),
+                critical=False,
+            )
+            .sign(ca_key, hashes.SHA256())
+        )
         device_dir = DEVICES_DIR / str(device_id)
         device_dir.mkdir(parents=True, exist_ok=True)
         cert_path = device_dir / "device.crt"
@@ -180,8 +181,11 @@ def revoke_certificate(fingerprint: str):
         ensure_dirs()
         existing = set()
         if REVOCATION_FILE.exists():
-            existing = {line.strip() for line in REVOCATION_FILE.read_text(
-            ).splitlines() if line.strip()}
+            existing = {
+                line.strip()
+                for line in REVOCATION_FILE.read_text().splitlines()
+                if line.strip()
+            }
         if fingerprint not in existing:
             with REVOCATION_FILE.open("a") as f:
                 f.write(fingerprint + "\n")
@@ -193,12 +197,18 @@ def create_crl():
     ensure_dirs()
     revoked = []
     if REVOCATION_FILE.exists():
-        revoked = [line.strip() for line in REVOCATION_FILE.read_text(
-        ).splitlines() if line.strip()]
+        revoked = [
+            line.strip()
+            for line in REVOCATION_FILE.read_text().splitlines()
+            if line.strip()
+        ]
     # Simple text-based CRL (not a real X.509 CRL for brevity) – extend as
     # needed
-    content = ["-----BEGIN REVOKED FINGERPRINT LIST-----"] + \
-        revoked + ["-----END REVOKED FINGERPRINT LIST-----"]
+    content = (
+        ["-----BEGIN REVOKED FINGERPRINT LIST-----"]
+        + revoked
+        + ["-----END REVOKED FINGERPRINT LIST-----"]
+    )
     CRL_FILE.write_text("\n".join(content))
 
 

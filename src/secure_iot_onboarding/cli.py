@@ -1,4 +1,5 @@
 """Command-line interface for Secure IoT Device Onboarding Portal."""
+
 from __future__ import annotations
 
 import click
@@ -25,27 +26,35 @@ def register(name, type, location, firmware):
         "name": name,
         "type": type,
         "location": location,
-        "firmware": firmware}
+        "firmware": firmware,
+    }
     r = requests.post(f"{API_BASE}/register", json=payload, timeout=30)
     if r.status_code >= 300:
         click.echo(f"Error: {r.status_code} {r.text}")
         raise SystemExit(1)
     data = r.json()
     click.echo("Device registered:")
-    click.echo(tabulate([[data['device_id'],
-                          data['certificate_fingerprint'],
-                          data['certificate_expires_at']]],
-                        headers=["ID",
-                                 "Fingerprint",
-                                 "Expires"]))
+    click.echo(
+        tabulate(
+            [
+                [
+                    data["device_id"],
+                    data["certificate_fingerprint"],
+                    data["certificate_expires_at"],
+                ]
+            ],
+            headers=["ID", "Fingerprint", "Expires"],
+        )
+    )
     click.echo(f"Credentials link: {data['credentials_link']}")
 
 
 @main.command()
 def list():  # pragma: no cover - simple convenience wrapper
-    """List devices (basic: requires direct DB or additional endpoint future)."""
+    """List devices (basic: requires direct DB or additional endpoint\n    future)."""
     click.echo(
-        "Listing devices not yet implemented via API; extend backend with /devices endpoint.")
+        "Listing devices not yet implemented via API; extend backend with /devices endpoint."
+    )
 
 
 @main.command()

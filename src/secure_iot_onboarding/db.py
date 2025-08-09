@@ -1,4 +1,5 @@
 """Database layer using SQLAlchemy ORM for devices & certificates."""
+
 from __future__ import annotations
 
 import os
@@ -15,17 +16,21 @@ from sqlalchemy import (
     ForeignKey,
     UniqueConstraint,
 )
-from sqlalchemy.orm import declarative_base, relationship, sessionmaker, scoped_session
+from sqlalchemy.orm import (
+    declarative_base,
+    relationship,
+    sessionmaker,
+    scoped_session,
+)
 
 DATABASE_URL = os.environ.get("DEVICE_DB_URL", "sqlite:///./data/devices.db")
 
 engine = create_engine(DATABASE_URL, future=True, echo=False)
 SessionLocal = scoped_session(
     sessionmaker(
-        bind=engine,
-        autoflush=False,
-        autocommit=False,
-        expire_on_commit=False))
+        bind=engine, autoflush=False, autocommit=False, expire_on_commit=False
+    )
+)
 Base = declarative_base()
 
 
@@ -43,18 +48,16 @@ class Device(Base):
         "Certificate",
         back_populates="device",
         uselist=False,
-        cascade="all, delete-orphan")
+        cascade="all, delete-orphan",
+    )
     __table_args__ = (UniqueConstraint("name", name="uq_device_name"),)
 
 
 class Certificate(Base):
     __tablename__ = "certificates"
     device_id = Column(
-        String,
-        ForeignKey(
-            "devices.id",
-            ondelete="CASCADE"),
-        primary_key=True)
+        String, ForeignKey("devices.id", ondelete="CASCADE"), primary_key=True
+    )
     fingerprint = Column(String, nullable=False, unique=True)
     issued_at = Column(DateTime, default=datetime.utcnow)
     expires_at = Column(DateTime, nullable=False)
@@ -68,10 +71,11 @@ def init_db():
 
 
 def add_device(
-        name: str,
-        type: str,
-        location: Optional[str] = None,
-        firmware: Optional[str] = None) -> Device:
+    name: str,
+    type: str,
+    location: Optional[str] = None,
+    firmware: Optional[str] = None,
+) -> Device:
     session = SessionLocal()
     device = Device(name=name, type=type, location=location, firmware=firmware)
     session.add(device)
@@ -82,14 +86,12 @@ def add_device(
 
 
 def add_certificate(
-        device_id: str,
-        fingerprint: str,
-        expires_at) -> Certificate:
+    device_id: str, fingerprint: str, expires_at
+) -> Certificate:
     session = SessionLocal()
     cert = Certificate(
-        device_id=device_id,
-        fingerprint=fingerprint,
-        expires_at=expires_at)
+        device_id=device_id, fingerprint=fingerprint, expires_at=expires_at
+    )
     session.add(cert)
     session.commit()
     session.refresh(cert)

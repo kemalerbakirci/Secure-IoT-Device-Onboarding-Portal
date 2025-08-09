@@ -11,18 +11,17 @@ Security notes:
     * For real deployments replace simulated link with signed pre-signed URL (S3, GCS, etc.)
     * Consider one-time download semantics (delete after first retrieval)
 """
+
 from __future__ import annotations
 
 from pathlib import Path
 from datetime import datetime, timedelta
-import os
 import secrets
 import json
 from typing import Optional
 
 import pyzipper
 
-from . import ca
 
 BASE_CERTS = Path(__file__).resolve().parent.parent.parent / "certs"
 DOWNLOAD_META = Path("./data/download_links.json")
@@ -39,15 +38,22 @@ def package_credentials(device_id: str, password: Optional[str] = None) -> str:
     ca_crt = BASE_CERTS / "ca.crt"
     if not (key_path.exists() and cert_path.exists() and ca_crt.exists()):
         raise FileNotFoundError(
-            "Required credential files missing; ensure registration completed.")
+            "Required credential files missing; ensure registration completed."
+        )
 
     zip_path = device_dir / "credentials.zip"
     password = password or secrets.token_urlsafe(12)
-    with pyzipper.AESZipFile(zip_path, 'w', compression=pyzipper.ZIP_DEFLATED, encryption=pyzipper.WZ_AES) as zf:
+    with pyzipper.AESZipFile(
+        zip_path,
+        "w",
+        compression=pyzipper.ZIP_DEFLATED,
+        encryption=pyzipper.WZ_AES,
+    ) as zf:
         zf.setpassword(password.encode())
         zf.writestr(
             "README.txt",
-            "Keep this archive secure. Password provided out-of-band.")
+            "Keep this archive secure. Password provided out-of-band.",
+        )
         zf.write(key_path, arcname="device.key")
         zf.write(cert_path, arcname="device.crt")
         zf.write(ca_crt, arcname="ca.crt")
