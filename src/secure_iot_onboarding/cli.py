@@ -51,9 +51,12 @@ def register(name, type, location, firmware):
 
 @main.command()
 def list():  # pragma: no cover - simple convenience wrapper
-    """List devices (basic: requires direct DB or additional endpoint\n    future)."""
+    """List devices.
+
+    Not yet implemented via API; add a /devices endpoint or direct DB access.
+    """
     click.echo(
-        "Listing devices not yet implemented via API; extend backend with /devices endpoint."
+        "Listing not yet implemented; add /devices endpoint to backend."
     )
 
 

@@ -1,17 +1,16 @@
-"""Credential packaging and simulated secure delivery.
+"""Credential packaging & simulated delivery utilities.
 
 Functions:
-    package_credentials(device_id) -> path to password protected ZIP containing:
+    package_credentials(device_id) -> password ZIP with:
         * device.key
         * device.crt
         * ca.crt
-    generate_download_link(zip_path, expiry_minutes) -> simulated temporary URL
+    generate_download_link(zip_path, expiry) -> temp token URL
 
 Security notes:
-    * For real deployments replace simulated link with signed pre-signed URL (S3, GCS, etc.)
-    * Consider one-time download semantics (delete after first retrieval)
+    * Use signed URLs (S3/GCS/etc.) for real deployments.
+    * Consider one-time download (delete after retrieval).
 """
-
 from __future__ import annotations
 
 from pathlib import Path
@@ -28,9 +27,10 @@ DOWNLOAD_META = Path("./data/download_links.json")
 
 
 def package_credentials(device_id: str, password: Optional[str] = None) -> str:
-    """Create a password protected ZIP for a device's credentials.
+    """Create password ZIP for device credentials.
 
-    Returns path to ZIP. Generates a random password if none supplied (not returned here).
+    Returns ZIP path. Generates random password if none provided.
+    Password is not returned; share out-of-band.
     """
     device_dir = BASE_CERTS / "devices" / device_id
     key_path = device_dir / "device.key"
@@ -61,9 +61,9 @@ def package_credentials(device_id: str, password: Optional[str] = None) -> str:
 
 
 def generate_download_link(zip_path: str, expiry_minutes: int = 30) -> str:
-    """Simulate generating a temporary signed URL.
+    """Return simulated temporary signed URL token.
 
-    Stores metadata in a JSON file; a production system would integrate with object storage.
+    Metadata saved in JSON; production would use object storage.
     """
     token = secrets.token_urlsafe(24)
     expires_at = datetime.utcnow() + timedelta(minutes=expiry_minutes)
