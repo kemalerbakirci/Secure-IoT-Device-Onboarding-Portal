@@ -1,0 +1,2 @@
+# This file ensures the devices directory is tracked by git
+# Device certificate directories will be created here during device registration

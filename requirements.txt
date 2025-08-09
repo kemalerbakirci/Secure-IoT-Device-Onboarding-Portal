@@ -1,0 +1,13 @@
+flask
+cryptography
+sqlalchemy
+paho-mqtt
+click
+pyzipper
+requests
+tabulate
+pytest
+pytest-mock
+flake8
+pydantic
+pytest-cov

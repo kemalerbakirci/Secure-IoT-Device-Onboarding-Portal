@@ -1,0 +1,2 @@
+# This file ensures the certs directory is tracked by git
+# Certificate files will be generated here during operation

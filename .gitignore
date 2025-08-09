@@ -1,0 +1,67 @@
+# Python bytecode / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments / env files
+.env
+.venv/
+venv/
+env/
+
+# Certificates and keys (generated)
+certs/*.crt
+certs/*.key
+certs/*.pem
+certs/*.txt
+certs/devices/*/
+!certs/.gitkeep
+!certs/devices/.gitkeep
+
+# Runtime data files
+data/*.db
+data/*.sqlite3
+data/*.acl
+data/*.json
+!data/.gitkeep
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Coverage / testing
+.coverage
+htmlcov/
+coverage.xml
+.pytest_cache/
+
+# SQLite database files
+*.db
+*.sqlite3
+
+# Logs / temp
+*.log
+logs/*.log
+logs/*.txt
+!logs/.gitkeep
+tmp/
+*.tmp
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Packaging
+*.tar.gz
+*.whl
+
+# Generated archives
+*.zip
+
+# MacOS
+.DS_Store
+
